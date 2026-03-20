@@ -1244,6 +1244,45 @@ function toggleMode() {
   document.getElementById('modeLabel').textContent = isVapt ? 'VAPT MODE' : 'SOC MODE';
   document.getElementById('heroTag').textContent = isVapt ? 'OFFENSIVE SECURITY SPECIALIST' : 'CYBERSECURITY SPECIALIST';
   
+  // Update hero description based on mode
+  const heroDesc = document.querySelector('.hero-desc');
+  if (heroDesc) {
+    heroDesc.innerHTML = isVapt 
+      ? 'Dual-domain security practitioner — engineering exploits and breaking boundaries. Bridging <strong>red-team precision</strong> with <strong>network penetration</strong>.'
+      : 'Dual-domain security practitioner — building defensive fortresses and breaking offensive boundaries. Bridging <strong>SOC intelligence</strong> with <strong>red-team precision</strong>.';
+  }
+  
+  // Update about section title
+  const aboutText = document.querySelectorAll('.about-text p')[0];
+  if (aboutText) {
+    aboutText.innerHTML = isVapt
+      ? '<strong>Offensive Security Researcher & Penetration Tester</strong> with expertise in systematically rooting enterprise targets, engineering weaponized PoC exploits, and designing advanced attack chains.'
+      : '<strong>Cybersecurity Analyst & SOC Specialist</strong> with a proven track record of deploying robust defensive frameworks, conducting digital forensics, and analyzing advanced network threats.';
+  }
+  
+  const aboutText2 = document.querySelectorAll('.about-text p')[1];
+  if (aboutText2) {
+    aboutText2.innerHTML = isVapt
+      ? 'Specialized in <strong>vulnerability research</strong>, <strong>exploit development</strong>, and <strong>network exploitation</strong> — building AI-powered pentesting engines and automating vulnerability discovery at scale. CGPA: <strong>9.0</strong>.'
+      : 'Also operating as an <strong>Offensive Security Researcher</strong> — systematically rooting enterprise targets, engineering PoC exploits, and building AI-powered pentesting engines. CGPA: <strong>9.0</strong>.';
+  }
+  
+  // Update skill titles
+  const skillCats = document.querySelectorAll('.skill-cat-title');
+  const skillTitles = {
+    0: isVapt ? 'OFFENSIVE / VAPT' : 'DEFENSIVE / SOC',
+    1: isVapt ? 'EXPLOIT TOOLSET' : 'SIEM & MONITORING',
+    2: isVapt ? 'VULNERABILITY RESEARCH' : 'VAPT TOOLSET',
+    3: 'PROGRAMMING',
+    4: isVapt ? 'NETWORK EXPLOITATION' : 'NETWORKING & INFRA',
+    5: 'AI / AUTOMATION'
+  };
+  skillCats.forEach((cat, idx) => {
+    if (skillTitles[idx]) {
+      cat.textContent = skillTitles[idx];
+    }
+  });
+  
   // Update all text elements for smooth theme transition
   const allElements = document.querySelectorAll('*');
   allElements.forEach(el => {
