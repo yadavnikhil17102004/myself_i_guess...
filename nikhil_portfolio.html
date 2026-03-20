@@ -61,28 +61,6 @@
     transition: color 0.4s ease, --accent 0.4s ease, --text 0.4s ease, --text-dim 0.4s ease;
   }
 
-  /* CUSTOM CURSOR */
-  #cursor {
-    position: fixed; width: 12px; height: 12px;
-    background: var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 9999;
-    transform: translate(-50%, -50%);
-    box-shadow: var(--mode-glow);
-    transition: background 0.2s ease-out, box-shadow 0.2s ease-out;
-    will-change: transform, left, top;
-  }
-  #cursor-ring {
-    position: fixed; width: 36px; height: 36px;
-    border: 1px solid var(--accent); border-radius: 50%;
-    pointer-events: none; z-index: 9998;
-    transform: translate(-50%, -50%);
-    opacity: 0.5;
-    transition: width 0.15s ease-out, height 0.15s ease-out, border-color 0.2s ease-out, opacity 0.15s ease-out;
-    will-change: transform, width, height, left, top;
-  }
-  body:has(a:hover) #cursor-ring,
-  body:has(button:hover) #cursor-ring { width: 56px; height: 56px; opacity: 1; }
-
   /* SCANLINES OVERLAY */
   body::before {
     content: '';
@@ -658,7 +636,6 @@
 </head>
 <body>
 
-<div id="cursor"></div>
 <div id="cursor-ring"></div>
 <div class="noise-overlay"></div>
 <canvas id="matrix-canvas"></canvas>
@@ -1121,18 +1098,6 @@
 </footer>
 
 <script>
-// ── CURSOR ──────────────────────────────────────
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-(function animCursor() {
-  rx += (mx - rx) * 0.35; ry += (my - ry) * 0.35;
-  cursor.style.transform = `translate(${mx}px, ${my}px)`;
-  cursorRing.style.transform = `translate(${rx}px, ${ry}px)`;
-  requestAnimationFrame(animCursor);
-})();
-
 // ── SCROLL PROGRESS ─────────────────────────────
 const sp = document.getElementById('scroll-progress');
 window.addEventListener('scroll', () => {
@@ -1244,7 +1209,7 @@ function toggleMode() {
   document.getElementById('modeLabel').textContent = isVapt ? 'VAPT MODE' : 'SOC MODE';
   document.getElementById('heroTag').textContent = isVapt ? 'OFFENSIVE SECURITY SPECIALIST' : 'CYBERSECURITY SPECIALIST';
   
-  // Update hero description based on mode
+  // ─── HERO DESCRIPTION ───
   const heroDesc = document.querySelector('.hero-desc');
   if (heroDesc) {
     heroDesc.innerHTML = isVapt 
@@ -1252,7 +1217,7 @@ function toggleMode() {
       : 'Dual-domain security practitioner — building defensive fortresses and breaking offensive boundaries. Bridging <strong>SOC intelligence</strong> with <strong>red-team precision</strong>.';
   }
   
-  // Update about section title
+  // ─── ABOUT SECTION ───
   const aboutText = document.querySelectorAll('.about-text p')[0];
   if (aboutText) {
     aboutText.innerHTML = isVapt
@@ -1267,10 +1232,39 @@ function toggleMode() {
       : 'Also operating as an <strong>Offensive Security Researcher</strong> — systematically rooting enterprise targets, engineering PoC exploits, and building AI-powered pentesting engines. CGPA: <strong>9.0</strong>.';
   }
   
-  // Update skill titles
+  // ─── TERMINAL OUTPUT ───
+  const terminalBody = document.querySelector('.terminal-body');
+  if (terminalBody) {
+    terminalBody.innerHTML = isVapt ? 
+      `<div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">whoami</span></div>
+       <div class="t-out success">red_team_operator // exploit_engineer + pentest_researcher</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">cat /etc/role</span></div>
+       <div class="t-out">Penetration Tester | Exploit Developer | Security Researcher</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">ls exploits/</span></div>
+       <div class="t-out success">web_vulns/ privilege_escalation/ network_exploitation/ weaponized_payloads/</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">cat mission.txt</span></div>
+       <div class="t-out">Find. Exploit. Automate.</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">status --availability</span></div>
+       <div class="t-out warn">⚡ OFFENSIVE OPERATIONS ACTIVE</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd t-cursor">_</span></div>`
+      : 
+      `<div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">whoami</span></div>
+       <div class="t-out success">nikhil_yadav // cyber_analyst + pentest_researcher</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">cat /etc/role</span></div>
+       <div class="t-out">SOC Analyst | VAPT Specialist | Malware Researcher</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">ls certifications/</span></div>
+       <div class="t-out success">CEH-in-progress/ SC-200-in-progress/ DFE/ EHE/ Cisco_x2/ GCP_17badges/</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">cat mission.txt</span></div>
+       <div class="t-out">Defend. Hunt. Exploit. Automate.</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">status --availability</span></div>
+       <div class="t-out warn">⚡ OPEN TO OPPORTUNITIES</div>
+       <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd t-cursor">_</span></div>`;
+  }
+  
+  // ─── SKILL CATEGORIES ───
   const skillCats = document.querySelectorAll('.skill-cat-title');
   const skillTitles = {
-    0: isVapt ? 'OFFENSIVE / VAPT' : 'DEFENSIVE / SOC',
+    0: isVapt ? 'OFFENSIVE / EXPLOIT' : 'DEFENSIVE / SOC',
     1: isVapt ? 'EXPLOIT TOOLSET' : 'SIEM & MONITORING',
     2: isVapt ? 'VULNERABILITY RESEARCH' : 'VAPT TOOLSET',
     3: 'PROGRAMMING',
@@ -1283,7 +1277,51 @@ function toggleMode() {
     }
   });
   
-  // Update all text elements for smooth theme transition
+  // ─── EXPERIENCE ROLES ───
+  const expCompanies = document.querySelectorAll('.exp-company');
+  const expRoles = document.querySelectorAll('.exp-role');
+  if (expCompanies[0]) {
+    expCompanies[0].textContent = isVapt ? 'Google Developer Group (GDG) Pune' : 'Google Developer Group (GDG) Pune';
+  }
+  if (expRoles[0]) {
+    expRoles[0].textContent = isVapt ? 'Offensive Security Research Lead' : 'Security & Infrastructure Contributor + Offensive Security Contributor';
+  }
+  if (expRoles[1]) {
+    expRoles[1].textContent = isVapt ? 'Exploit Development & Vulnerability Research' : 'Defensive Security & Malware Researcher + Offensive Security Researcher';
+  }
+  
+  // ─── PROJECTS: Reorder by relevance ───
+  const projectCards = document.querySelectorAll('.project-card');
+  const projectTexts = {
+    0: isVapt ? 
+      { tit: 'pentest-copilot', desc: 'AI-powered red team tactical engine with LLM-driven vulnerability discovery and automated exploitation workflows.' } :
+      { tit: 'MyWazuhLab', desc: 'Virtualized Security Operations Center leveraging Wazuh XDR, Suricata, and pfSense. Custom detection rules for brute-force and File Integrity Monitoring.' },
+    1: isVapt ?
+      { tit: 'MCP Kali Server', desc: 'API layer fusing AI generation with native offensive command execution. Automated CTF resolutions and vulnerability recon.' } :
+      { tit: 'pentest-copilot', desc: 'LLM tactical engine with persistent terminal bindings. Target-aware checklists based on live intel.' },
+    2: isVapt ?
+      { tit: 'Google Dorkinator', desc: 'Concurrent Python Dorking engine with WAF bypass logic. Advanced OSINT for sensitive reconnaissance.' } :
+      { tit: 'Linksniff', desc: 'Forensic tool to detect malicious URLs and phishing links. Automated C2 detection in PDFs.' },
+  };
+  
+  projectCards.forEach((card, idx) => {
+    if (projectTexts[idx]) {
+      const titleEl = card.querySelector('.project-name');
+      const descEl = card.querySelector('.project-desc');
+      if (titleEl) titleEl.textContent = projectTexts[idx].tit;
+      if (descEl) descEl.textContent = projectTexts[idx].desc;
+    }
+  });
+  
+  // ─── FOOTER MESSAGE ───
+  const footerCopy = document.querySelector('.footer-copy');
+  if (footerCopy) {
+    footerCopy.textContent = isVapt 
+      ? '© 2025 Nikhil Yadav — Red team operations. Exploits delivered.' 
+      : '© 2025 Nikhil Yadav — Built with precision. Secured by default.';
+  }
+  
+  // ─── SMOOTH TRANSITIONS ───
   const allElements = document.querySelectorAll('*');
   allElements.forEach(el => {
     if (el.style.color || el.classList.contains('reveal') || el.textContent.length > 0) {
