@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content="Nikhil Yadav — Cybersecurity Specialist | SOC Analyst, Penetration Tester, Malware Researcher. Defending networks and breaking boundaries with precision."/>
 <title>Nikhil Yadav — Cybersecurity Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -50,7 +51,7 @@
 
   html { scroll-behavior: smooth; }
 
-  html, body { cursor: default !important; }
+  html, body { cursor: auto !important; }
   a, button, .btn, .mode-toggle, .project-card { cursor: pointer !important; }
 
   body {
@@ -107,6 +108,42 @@
   .nav-links a::before { content: './'; color: var(--accent); opacity: 0; transition: opacity 0.2s; }
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover::before { opacity: 1; }
+  .nav-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    border-radius: 4px;
+    width: 38px;
+    height: 32px;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 64px;
+    right: 20px;
+    min-width: 180px;
+    background: rgba(5, 15, 8, 0.96);
+    border: 1px solid var(--accent-border);
+    border-radius: 6px;
+    padding: 10px;
+    z-index: 1002;
+    backdrop-filter: blur(6px);
+  }
+  .mobile-menu.open { display: flex; flex-direction: column; gap: 8px; }
+  .mobile-menu a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    padding: 6px 8px;
+    border-radius: 4px;
+  }
+  .mobile-menu a:hover { color: var(--accent); background: var(--green-dim); }
 
   /* MODE TOGGLE */
   .mode-toggle {
@@ -136,7 +173,8 @@
     min-height: 100vh;
     display: flex; flex-direction: column; justify-content: center;
     padding-top: 120px;
-    max-width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding-left: 80px; padding-right: 80px;
   }
   .hero-tag {
@@ -620,6 +658,7 @@
   @media (max-width: 768px) {
     nav { padding: 12px 20px; }
     .nav-links { display: none; }
+    .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
     #hero, footer { padding-left: 24px; padding-right: 24px; }
     section { padding: 80px 24px; }
     #about .about-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -652,11 +691,19 @@
     <a href="#projects">projects</a>
     <a href="#certs">certs</a>
   </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu">≡</button>
   <button class="mode-toggle" id="modeToggle" onclick="toggleMode()">
     <div class="mode-dot" id="modeDot"></div>
     <span class="mode-label" id="modeLabel">SOC MODE</span>
   </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">about</a>
+  <a href="#skills">skills</a>
+  <a href="#experience">experience</a>
+  <a href="#projects">projects</a>
+  <a href="#certs">certs</a>
+</div>
 
 <!-- HERO -->
 <div id="hero">
@@ -683,7 +730,7 @@
       <span class="stat-label">GCP BADGES</span>
     </div>
     <div class="stat">
-      <span class="stat-num" data-count="9">0</span>
+      <span class="stat-num" data-count="9.0">0</span>
       <span class="stat-label">CGPA / 10</span>
     </div>
     <div class="stat">
@@ -1095,7 +1142,7 @@
     <a href="https://linkedin.com/in/nikhil-yadav" target="_blank">⬡ LINKEDIN</a>
     <a href="https://github.com/yadavnikhil17102004" target="_blank">⌥ GITHUB</a>
   </div>
-  <div class="footer-copy">© 2025 Nikhil Yadav — Built with precision. Secured by default.</div>
+  <div class="footer-copy">© 2026 Nikhil Yadav — Built with precision. Secured by default.</div>
 </footer>
 
 <script>
@@ -1110,6 +1157,7 @@ window.addEventListener('scroll', () => {
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 let cols, drops;
+let matrixTimer = null;
 function initMatrix() {
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
   cols = Math.floor(canvas.width / 20); drops = Array(cols).fill(1);
@@ -1117,7 +1165,7 @@ function initMatrix() {
 initMatrix();
 window.addEventListener('resize', initMatrix);
 const chars = 'アウエオカサタナハマヤラワABCDEFGHIJKLMNOP0123456789<>{}[]/\\|;:';
-setInterval(() => {
+function drawMatrix() {
   const isVapt = document.body.classList.contains('vapt-mode');
   ctx.fillStyle = 'rgba(2,12,6,0.05)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1129,7 +1177,21 @@ setInterval(() => {
     if (y * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
     drops[i]++;
   });
-}, 50);
+}
+function startMatrix() {
+  if (matrixTimer !== null) return;
+  matrixTimer = setInterval(drawMatrix, 50);
+}
+function stopMatrix() {
+  if (matrixTimer === null) return;
+  clearInterval(matrixTimer);
+  matrixTimer = null;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopMatrix();
+  else startMatrix();
+});
+startMatrix();
 
 // ── TYPED TEXT ──────────────────────────────────
 const socPhrases = [
@@ -1166,13 +1228,17 @@ typeLoop();
 // ── COUNTER ANIMATION ───────────────────────────
 function animateCounters() {
   document.querySelectorAll('[data-count]').forEach(el => {
-    const target = +el.dataset.count;
+    const target = Number(el.dataset.count);
+    const isDecimal = !Number.isInteger(target);
     let cur = 0;
     const step = target / 40;
     const timer = setInterval(() => {
       cur = Math.min(cur + step, target);
-      el.textContent = Math.floor(cur) + (target === 9 ? '.0' : '+');
-      if (cur >= target) { el.textContent = target + (target === 9 ? '.0' : '+'); clearInterval(timer); }
+      el.textContent = isDecimal ? cur.toFixed(1) : `${Math.floor(cur)}+`;
+      if (cur >= target) {
+        el.textContent = isDecimal ? target.toFixed(1) : `${Math.trunc(target)}+`;
+        clearInterval(timer);
+      }
     }, 40);
   });
 }
@@ -1192,6 +1258,10 @@ const barObserver = new IntersectionObserver((entries) => {
       e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
         bar.style.width = bar.dataset.width + '%';
       });
+    } else {
+      e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = '0';
+      });
     }
   });
 }, { threshold: 0.2 });
@@ -1202,9 +1272,26 @@ document.querySelectorAll('.project-card').forEach((c, i) => c.style.transitionD
 document.querySelectorAll('.cert-item').forEach((c, i) => c.style.transitionDelay = (i * 0.06) + 's');
 document.querySelectorAll('.skill-category').forEach((c, i) => c.style.transitionDelay = (i * 0.08) + 's');
 
+// Mobile nav
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+if (navToggle && mobileMenu) {
+  navToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+}
+
 // ── MODE TOGGLE ──────────────────────────────────
 let isVapt = false;
+let toggleLocked = false;
 function toggleMode() {
+  if (toggleLocked) return;
+  toggleLocked = true;
+  setTimeout(() => { toggleLocked = false; }, 600);
+
   isVapt = !isVapt;
   document.body.classList.toggle('vapt-mode', isVapt);
   document.getElementById('modeLabel').textContent = isVapt ? 'VAPT MODE' : 'SOC MODE';
@@ -1421,8 +1508,8 @@ function toggleMode() {
   const footerCopy = document.querySelector('.footer-copy');
   if (footerCopy) {
     footerCopy.textContent = isVapt 
-      ? '© 2025 Nikhil Yadav — Red team operations. Exploits delivered.' 
-      : '© 2025 Nikhil Yadav — Built with precision. Secured by default.';
+      ? '© 2026 Nikhil Yadav — Red team operations. Exploits delivered.' 
+      : '© 2026 Nikhil Yadav — Built with precision. Secured by default.';
   }
   
   // ─── SMOOTH TRANSITIONS ───
