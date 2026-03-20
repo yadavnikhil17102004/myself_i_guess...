@@ -50,6 +50,9 @@
 
   html { scroll-behavior: smooth; }
 
+  html, body { cursor: default !important; }
+  a, button, .btn, .mode-toggle, .project-card { cursor: pointer !important; }
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -635,7 +638,6 @@
 </head>
 <body>
 
-<div id="cursor-ring"></div>
 <div class="noise-overlay"></div>
 <canvas id="matrix-canvas"></canvas>
 <div class="scroll-progress" id="scroll-progress"></div>
@@ -1360,15 +1362,60 @@ function toggleMode() {
   projectCards.forEach((card, idx) => {
     const data = projectModeContent[idx];
     if (!data) return;
+    const numEl = card.querySelector('.project-num');
     const titleEl = card.querySelector('.project-name');
     const typeEl = card.querySelector('.project-type');
     const descEl = card.querySelector('.project-desc');
     const tagsEl = card.querySelector('.project-tags');
+    if (numEl) numEl.textContent = `P.${String(idx + 1).padStart(2, '0')} // ${data.type.toUpperCase()}`;
     if (titleEl) titleEl.textContent = data.name;
     if (typeEl) typeEl.textContent = data.type;
     if (descEl) descEl.textContent = data.desc;
     if (tagsEl) tagsEl.innerHTML = data.tags.map(tag => `<span class="project-tag">${tag}</span>`).join('');
   });
+
+  const projectsGrid = document.querySelector('.projects-grid');
+  if (projectsGrid) {
+    const rank = isVapt
+      ? {
+          'pentest-copilot': 0,
+          'MCP Kali Server': 1,
+          'Google Dorkinator': 2,
+          'CVE Map': 3,
+          'DDoS Simulation Framework': 4,
+          'Linksniff': 5,
+          'Secret Keyboard': 6,
+          'Ransomware Research': 7,
+          'MyWazuhLab': 8,
+        }
+      : {
+          'MyWazuhLab': 0,
+          'Linksniff': 1,
+          'Ransomware Research': 2,
+          'DDoS Simulation Framework': 3,
+          'CVE Map': 4,
+          'pentest-copilot': 5,
+          'MCP Kali Server': 6,
+          'Google Dorkinator': 7,
+          'Secret Keyboard': 8,
+        };
+
+    const sorted = [...projectCards].sort((a, b) => {
+      const aName = a.querySelector('.project-name')?.textContent || '';
+      const bName = b.querySelector('.project-name')?.textContent || '';
+      return (rank[aName] ?? 999) - (rank[bName] ?? 999);
+    });
+
+    sorted.forEach((card, i) => {
+      card.style.transitionDelay = `${i * 0.04}s`;
+      projectsGrid.appendChild(card);
+      const numEl = card.querySelector('.project-num');
+      if (numEl) {
+        const suffix = (numEl.textContent.split('//')[1] || '').trim();
+        numEl.textContent = `P.${String(i + 1).padStart(2, '0')} // ${suffix}`;
+      }
+    });
+  }
   
   // ─── FOOTER MESSAGE ───
   const footerCopy = document.querySelector('.footer-copy');
