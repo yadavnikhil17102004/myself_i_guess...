@@ -1262,17 +1262,62 @@ function toggleMode() {
   
   // ─── SKILL CATEGORIES ───
   const skillCats = document.querySelectorAll('.skill-cat-title');
-  const skillTitles = {
-    0: isVapt ? 'OFFENSIVE / EXPLOIT' : 'DEFENSIVE / SOC',
-    1: isVapt ? 'EXPLOIT TOOLSET' : 'SIEM & MONITORING',
-    2: isVapt ? 'VULNERABILITY RESEARCH' : 'VAPT TOOLSET',
-    3: 'PROGRAMMING',
-    4: isVapt ? 'NETWORK EXPLOITATION' : 'NETWORKING & INFRA',
-    5: 'AI / AUTOMATION'
-  };
-  skillCats.forEach((cat, idx) => {
-    if (skillTitles[idx]) {
-      cat.textContent = skillTitles[idx];
+  const skillGroups = document.querySelectorAll('.skill-tags');
+  const skillModeContent = isVapt ? [
+    {
+      title: 'OFFENSIVE / RED TEAM',
+      tags: ['Web Exploitation', 'Privilege Escalation', 'Attack Surface Mapping', 'Lateral Movement', 'Payload Crafting', 'Post Exploitation', 'Active Recon']
+    },
+    {
+      title: 'OFFENSIVE TOOLCHAIN',
+      tags: ['Burp Suite Pro', 'Metasploit', 'Nmap NSE', 'SQLmap', 'ffuf', 'Gobuster', 'Hydra', 'Impacket']
+    },
+    {
+      title: 'VULNERABILITY RESEARCH',
+      tags: ['OWASP Top 10', 'Auth Bypass', 'RCE Testing', 'SSRF/XXE', 'IDOR Patterns', 'WAF Evasion', 'PoC Engineering']
+    },
+    {
+      title: 'PROGRAMMING',
+      tags: ['Python', 'Go', 'Bash', 'JavaScript', 'SQL']
+    },
+    {
+      title: 'NETWORK EXPLOITATION',
+      tags: ['TCP/IP', 'DNS Abuse', 'HTTP Smuggling', 'Firewall Evasion', 'AD Enumeration', 'Pivoting', 'SDN Attack Simulation']
+    },
+    {
+      title: 'AI / AUTOMATION',
+      tags: ['Agentic Pentest Workflows', 'LLM Prompt Chains', 'MCP Protocol', 'Recon Automation', 'Exploit Triage']
+    }
+  ] : [
+    {
+      title: 'DEFENSIVE / SOC',
+      tags: ['Threat Detection', 'Log Analysis', 'Digital Forensics', 'Incident Response', 'Ransomware Analysis', 'IDS/IPS', 'Cybercrime Investigation']
+    },
+    {
+      title: 'SIEM & MONITORING',
+      tags: ['Wazuh XDR', 'Splunk', 'Wireshark', 'Nessus', 'Snort', 'Zeek', 'Suricata', 'ProcMon']
+    },
+    {
+      title: 'VAPT TOOLSET',
+      tags: ['Burp Suite', 'Metasploit', 'Nmap', 'SQLmap', 'Nikto', 'Dirsearch', 'Gobuster', 'OWASP Top 10']
+    },
+    {
+      title: 'PROGRAMMING',
+      tags: ['Python', 'Go', 'Bash', 'JavaScript', 'SQL']
+    },
+    {
+      title: 'NETWORKING & INFRA',
+      tags: ['TCP/IP', 'DNS', 'HTTP/HTTPS', 'Firewalls', 'Active Directory', 'pfSense', 'SDN / Ryu']
+    },
+    {
+      title: 'AI / AUTOMATION',
+      tags: ['Agentic AI Workflows', 'LLM Integration', 'MCP Protocol', 'GCP (17 Badges)']
+    }
+  ];
+  skillModeContent.forEach((group, idx) => {
+    if (skillCats[idx]) skillCats[idx].textContent = group.title;
+    if (skillGroups[idx]) {
+      skillGroups[idx].innerHTML = group.tags.map(tag => `<span class="skill-tag">${tag}</span>`).join('');
     }
   });
   
@@ -1291,25 +1336,38 @@ function toggleMode() {
   
   // ─── PROJECTS: Reorder by relevance ───
   const projectCards = document.querySelectorAll('.project-card');
-  const projectTexts = {
-    0: isVapt ? 
-      { tit: 'pentest-copilot', desc: 'AI-powered red team tactical engine with LLM-driven vulnerability discovery and automated exploitation workflows.' } :
-      { tit: 'MyWazuhLab', desc: 'Virtualized Security Operations Center leveraging Wazuh XDR, Suricata, and pfSense. Custom detection rules for brute-force and File Integrity Monitoring.' },
-    1: isVapt ?
-      { tit: 'MCP Kali Server', desc: 'API layer fusing AI generation with native offensive command execution. Automated CTF resolutions and vulnerability recon.' } :
-      { tit: 'pentest-copilot', desc: 'LLM tactical engine with persistent terminal bindings. Target-aware checklists based on live intel.' },
-    2: isVapt ?
-      { tit: 'Google Dorkinator', desc: 'Concurrent Python Dorking engine with WAF bypass logic. Advanced OSINT for sensitive reconnaissance.' } :
-      { tit: 'Linksniff', desc: 'Forensic tool to detect malicious URLs and phishing links. Automated C2 detection in PDFs.' },
-  };
-  
+  const projectModeContent = isVapt ? [
+    { name: 'pentest-copilot', type: 'Agentic AI Offensive Engine', desc: 'AI-driven red team engine for recon, vulnerability mapping, and automated exploitation playbooks.', tags: ['LLM', 'Kali Linux', 'AI Agents', 'Attack Ops'] },
+    { name: 'MCP Kali Server', type: 'AI-Bridged Offensive Protocol', desc: 'MCP-based command bridge that executes offensive workflows with live context and tactical sequencing.', tags: ['MCP', 'Nmap', 'SQLmap', 'Go'] },
+    { name: 'Google Dorkinator', type: 'Automated OSINT Engine', desc: 'Concurrent dork automation with anti-bot handling and targeted recon extraction for attack surface discovery.', tags: ['Python', 'Tor', 'WAF Bypass', 'OSINT'] },
+    { name: 'CVE Map', type: 'Exploit Intelligence Correlator', desc: 'Fast CVE ingestion mapped against public PoCs to accelerate exploit feasibility checks.', tags: ['Go', 'CVE', 'PoC Matching', 'Concurrency'] },
+    { name: 'DDoS Simulation Framework', type: 'Offensive Network Simulation', desc: 'SDN-based high-volume traffic simulation to model adversarial behavior and stress controls.', tags: ['Ryu SDN', 'DDoS', 'Python', 'Network Sim'] },
+    { name: 'Linksniff', type: 'Phishing Recon Utility', desc: 'Automated extraction of malicious indicators from documents and suspicious link graphing.', tags: ['Python', 'PDF Forensics', 'Phishing', 'C2 Detection'] },
+    { name: 'Secret Keyboard', type: 'Android Attack-Resistance Study', desc: 'Runtime keystroke protection prototype hardened against memory-level interception attempts.', tags: ['Android', 'Cipher', 'Anti-Keylog', 'Runtime Defense'] },
+    { name: 'Ransomware Research', type: 'Adversary Behavior Research', desc: 'Controlled execution analysis of ransomware tactics, cryptographic behavior, and infection patterns.', tags: ['Malware Analysis', 'Behavioral Study', 'Encryption', 'Forensics'] },
+    { name: 'MyWazuhLab', type: 'Blue Team Validation Lab', desc: 'SOC lab used as a defensive baseline to validate detections against offensive simulations.', tags: ['Wazuh XDR', 'Suricata', 'pfSense', 'FIM'] }
+  ] : [
+    { name: 'MyWazuhLab', type: 'End-to-End SOC Environment', desc: 'Virtualized Security Operations Center leveraging Wazuh XDR, Suricata, and pfSense. Custom detection rules for brute-force and File Integrity Monitoring with enterprise-level forensic analysis.', tags: ['Wazuh XDR', 'Suricata', 'pfSense', 'FIM', 'Forensics'] },
+    { name: 'Linksniff', type: 'Phishing Detection Tool', desc: 'Forensic tool to detect malicious URLs and phishing links embedded in PDF documents. Automated extraction and statistical analysis of C2 URLs and suspicious JavaScript payloads.', tags: ['Python', 'PDF Forensics', 'Phishing', 'C2 Detection'] },
+    { name: 'Ransomware Research', type: 'Malware Analysis (Defensive)', desc: 'Controlled experiments in isolated environments analyzing ransomware behavior patterns. Dissected encryption methodologies and developed custom detection signatures for proactive mitigation.', tags: ['Malware Analysis', 'Detection Sigs', 'Encryption', 'Forensics'] },
+    { name: 'DDoS Simulation Framework', type: 'Network Security / SDN', desc: 'Robust attack simulation using Ryu SDN framework. Models synthetic DDoS traffic patterns to dynamically detect network anomalies and prototype mitigation strategies.', tags: ['Ryu SDN', 'DDoS', 'Python', 'Network Sim'] },
+    { name: 'CVE Map', type: 'Vulnerability Asset Aggregator', desc: 'Concurrent Go engine fetching global vulnerability payloads into a native index. Matches raw CVE architectures to GitHub PoC repositories for immediate asset analysis.', tags: ['Go', 'CVE', 'Concurrency', 'PoC Matching'] },
+    { name: 'pentest-copilot', type: 'Agentic AI Tactical Engine', desc: 'LLM tactical engine with persistent terminal bindings inside Kali. Target-aware checklists based on live intel with integrated VPN tunneling for direct interaction during engagements.', tags: ['LLM', 'Kali Linux', 'VPN', 'AI Agents'] },
+    { name: 'MCP Kali Server', type: 'AI-Bridged Offensive Protocol', desc: 'API layer fusing AI generation with native offensive command execution. Automated high-speed CTF resolutions and vulnerability recon via Nmap/sqlmap hooks using MCP.', tags: ['MCP', 'Nmap', 'SQLmap', 'Go'] },
+    { name: 'Google Dorkinator', type: 'Automated OSINT Engine', desc: 'Concurrent Python Dorking engine featuring WAF bypass logic and Tor traffic routing. Handles CAPTCHAs and anti-bot profiling for extracting sensitive reconnaissance data.', tags: ['Python', 'Tor', 'WAF Bypass', 'OSINT'] },
+    { name: 'Secret Keyboard', type: 'Runtime Exploit Mitigation', desc: 'Android defense application preempting keylogger memory scraping. Encrypts keystrokes using real-time custom substitution cipher pipelines prior to OS buffer injection.', tags: ['Android', 'Cipher', 'Anti-Keylog', 'Runtime Defense'] }
+  ];
   projectCards.forEach((card, idx) => {
-    if (projectTexts[idx]) {
-      const titleEl = card.querySelector('.project-name');
-      const descEl = card.querySelector('.project-desc');
-      if (titleEl) titleEl.textContent = projectTexts[idx].tit;
-      if (descEl) descEl.textContent = projectTexts[idx].desc;
-    }
+    const data = projectModeContent[idx];
+    if (!data) return;
+    const titleEl = card.querySelector('.project-name');
+    const typeEl = card.querySelector('.project-type');
+    const descEl = card.querySelector('.project-desc');
+    const tagsEl = card.querySelector('.project-tags');
+    if (titleEl) titleEl.textContent = data.name;
+    if (typeEl) typeEl.textContent = data.type;
+    if (descEl) descEl.textContent = data.desc;
+    if (tagsEl) tagsEl.innerHTML = data.tags.map(tag => `<span class="project-tag">${tag}</span>`).join('');
   });
   
   // ─── FOOTER MESSAGE ───
